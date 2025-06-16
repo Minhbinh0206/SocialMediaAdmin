@@ -3,9 +3,11 @@ import './HomePersonal.css';
 import { auth } from '../../firebaseConfig'; // sửa đường dẫn nếu khác
 import { ref, get, child } from 'firebase/database';
 import { database } from '../../firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 const HomePersonal = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate(); // 👈 khởi tạo điều hướng
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
@@ -57,8 +59,8 @@ const HomePersonal = () => {
       </div>
 
       <div className='manager-container'>
-        <div className='home'>Home</div>
-        <div className='posts'>Bài viết</div>
+        <div className='home' onClick={() => navigate('/home')}>Home</div>
+        <div className='posts' onClick={() => navigate('/posts')}>Bài viết</div>
         <div className='notify'>Thông báo</div>
         <div className='event'>Sự kiện</div>
       </div>

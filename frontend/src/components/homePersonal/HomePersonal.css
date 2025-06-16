@@ -1,52 +1,66 @@
-.container{
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    padding: 10px;
+/* Container bọc avatar + menu */
+.container {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  font-family: 'Segoe UI', sans-serif;
 }
 
+/* Phần hiển thị avatar và tên */
 .personal-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
+/* Avatar người dùng */
 .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    display: inline-block;
-    background-size: auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+  background-color: #e0f7fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
 }
 
+/* Tên người dùng */
 .name {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
+  font-size: 17px;
+  font-weight: 600;
+  color: #000;
 }
 
+/* Container chứa các nút quản lý */
 .manager-container {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.home, .posts, .notify, .event {
-    padding: 10px 15px;
-    font-size: 16px;
-    color: #000;
-    cursor: pointer;
-    margin: 5px 0;
-    background-color: antiquewhite;
-    border-radius: 10px;
+/* Các nút: Home, Posts,... */
+.home,
+.posts,
+.notify,
+.event {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #f5f5f5;
+  color: #333;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .home:hover,
 .posts:hover,
 .notify:hover,
 .event:hover {
-  background-color: #26c6da;
+  background-color: #00bcd4;
   color: white;
 }
