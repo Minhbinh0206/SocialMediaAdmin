@@ -1,0 +1,65 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../../images/tdc.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: center;
+  /* background: linear-gradient(135deg, #e0f7fa, #80deea); */
+}
+
+.login-form {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: linear-gradient(135deg, #e0f7fa, #80deea);;
+}
+
+.login-form input {
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.login-form button {
+  padding: 12px;
+  background: #26c6da;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s linear;
+}
+
+.login-form button:hover {
+  background: #58ade5;
+  color: white;
+}
+
+.note {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+.note a {
+  color: #00796b;
+  text-decoration: none;
+}
+.note a:hover {
+  text-decoration: underline;
+}
