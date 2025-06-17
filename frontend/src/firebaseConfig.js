@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage"; // ✅ THÊM DÒNG NÀY
 
 const firebaseConfig = {
   apiKey: "AIzaSyCrmDM-bRdXKE8nEyrtzGFgPRQzMkvmrwI",
@@ -13,11 +14,10 @@ const firebaseConfig = {
   appId: "1:878251601548:android:b26b272ad6f008acaed5a9"
 };
 
-// Khởi tạo Firebase
 const app = initializeApp(firebaseConfig);
 
-// Khởi tạo Auth và Realtime Database
 const auth = getAuth(app);
 const database = getDatabase(app);
+const storage = getStorage(app); // ✅ THÊM DÒNG NÀY
 
-export { auth, database };
+export { auth, database, storage }; // ✅ THÊM storage VÀO EXPORT

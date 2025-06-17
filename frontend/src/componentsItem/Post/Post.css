@@ -1,12 +1,19 @@
+/* Bố cục bài viết */
 .post {
-  background-color: #fff;
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin: 20px;
-  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  margin: 5px 30px 30px 24px;
+  max-width: 600px;
+  transition: all 0.3s ease;
 }
 
+.post:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
 .post-header {
   display: flex;
   align-items: center;
@@ -15,11 +22,11 @@
 }
 
 .post-avatar {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 10px;
+  margin-right: 12px;
 }
 
 .post-user-info {
@@ -28,51 +35,132 @@
 
 .post-name {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   color: #333;
 }
 
 .post-time {
   font-size: 12px;
-  color: gray;
-  margin-top: 2px;
+  color: #777;
 }
 
 .post-options {
   font-size: 20px;
+  color: #999;
   cursor: pointer;
-  color: gray;
+  padding: 4px;
+  transition: color 0.2s;
 }
 
-.post-image img {
-  width: 100%;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-
-.post-content {
-  font-size: 14px;
+.post-options:hover {
   color: #333;
-  margin-bottom: 10px;
 }
 
+.post-image {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-top: 8px;
+  aspect-ratio: 16 / 9;
+  background-color: #f4f4f4;
+  width: 100%;
+}
+
+/* Slider không set width cố định, chỉ flex được dịch chuyển */
+.post-image-slider {
+  display: flex;
+  transition: transform 0.4s ease-in-out;
+  height: 100%;
+  width: 100%;
+}
+
+/* Mỗi ảnh là 100% của post-image */
+.post-image-slide {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+
+.post-image-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* Nút điều hướng trái/phải */
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  transition: background-color 0.3s ease;
+}
+
+.slide-btn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Vị trí nút */
+.slide-btn.left {
+  left: 10px;
+}
+
+.slide-btn.right {
+  right: 10px;
+}
+
+/* Khi bị disabled */
+.slide-btn.disabled {
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* Nội dung */
+.post-content {
+  margin-top: 12px;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Hành động */
 .post-actions {
   display: flex;
-  justify-content: space-between;
-  padding-top: 5px;
+  justify-content: space-around;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid #eee;
-  font-size: 14px;
-  color: #555;
 }
 
 .action {
   display: flex;
   align-items: center;
-  gap: 5px;
+  color: #555;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .action:hover {
-  color: #007bff;
+  color: #000;
 }
+
+.action svg {
+  margin-right: 6px;
+}
+
+

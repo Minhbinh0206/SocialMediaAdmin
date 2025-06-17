@@ -1,0 +1,337 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background-color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 500px;
+  max-width: 95%;
+  box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Avatar + tên người dùng */
+.personal-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.name {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* Textarea */
+.text-area {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  color: #333;
+  resize: none;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.cancel-btn,
+.submit-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-btn {
+  background-color: #ccc;
+  margin-right: 10px;
+}
+
+.cancel-btn:hover {
+  background-color: #b3b3b3;
+}
+
+.submit-btn {
+  background-color: #26c6da;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #1bb5cb;
+}
+
+.more-options {
+  display: flex;
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.option-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.option-icon {
+  font-size: 18px;
+  color: #26c6da;
+}
+
+.image-post {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
+  object-fit: cover;
+  max-height: 300px;
+}
+
+.image-preview-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+}
+
+.image-post {
+  width: 100%;
+  max-height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.arrow {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  font-size: 20px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  margin: 0 10px;
+}
+
+.image-preview-wrapper {
+  position: relative;
+  width: 100%;
+  height: 300px; /* ✅ giới hạn chiều cao để không giật */
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out; /* ✅ animation trượt */
+  height: 100%;
+}
+
+.image-post {
+  flex: 0 0 100%;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 20px;
+  right: 14px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.4); /* ✅ nền mờ */
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.arrow:hover {
+  background: #26c6da;
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+/* Wrapper chuyển cảnh giữa các step */
+.modal-transition-wrapper {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Đảm bảo mỗi modal-box chiếm 100% */
+.modal-slide .modal-box {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+/* Ẩn popup không phải step hiện tại */
+.modal-slide .modal-box {
+  width: 500px;
+  flex-shrink: 0;
+  display: none;
+}
+
+.slide-step-1 .modal-box:nth-child(1),
+.slide-step-2 .modal-box:nth-child(2) {
+  display: block;
+}
+
+/* Căn giữa modal-box đang hiển thị */
+.modal-backdrop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-transition-wrapper {
+  width: 100%;
+  max-width: 500px;
+}
+
+.target-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  box-sizing: border-box;
+  color: #333;
+  background-color: white;
+  outline: none;
+}
+
+.target-select:focus {
+  border-color: #26c6da;
+}
+
+.department-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* ⬅️ Chia 2 cột */
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.department-radio-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 cột */
+  gap: 8px 16px;
+  margin-bottom: 16px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.radio-item input[type='radio'] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #888;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.radio-item input[type='radio']:checked::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background-color: #007bff;
+  border-radius: 50%;
+}

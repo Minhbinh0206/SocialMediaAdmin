@@ -1,28 +1,67 @@
 // components/ListPost.jsx
-import React from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Post from '../../componentsItem/Post/Post.tsx';
+import { ref, onValue } from 'firebase/database';
+import { database } from '../../firebaseConfig';
 
 const ListPost = () => {
-  const posts = [
-    {
-      id: 1,
-      avatar: 'https://i.pravatar.cc/100?img=1',
-      name: 'Nguyễn Văn A',
-      timeAgo: '177 ngày trước',
-      image: 'https://cdn.pixabay.com/photo/2017/11/09/21/41/cat-2934720_1280.jpg',
-      description: "Tham gia cuộc thi nhiếp ảnh với chủ đề 'Khoảnh khắc tuổi trẻ' từ ngày 1/10 đến 30/10.",
-      likes: 45,
-      comments: 0,
-      shares: 0,
-    },
-    // Có thể thêm nhiều post ở đây
-  ];
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const postsRef = ref(database, 'Posts');
+
+    const unsubscribe = onValue(postsRef, (snapshot) => {
+      const postList = [];
+
+      snapshot.forEach(groupSnap => {
+        groupSnap.forEach(adminSnap => {
+          adminSnap.forEach(postSnap => {
+            const postData = postSnap.val();
+
+            postList.push({
+              id: postData.postId,
+              userId: postData.userId || '',
+              timeAgo: postData.createAt || '',
+              postImage: Array.isArray(postData.postImage) ? postData.postImage : [],
+              description: postData.content,
+              likes: postData.postLike || 0,
+              comments: 0,
+              shares: 0,
+            });
+          });
+        });
+      });
+
+      // Sắp xếp bài viết theo thời gian mới nhất nếu có createAt dạng timestamp
+      postList.sort((a, b) => new Date(b.timeAgo) - new Date(a.timeAgo));
+
+      setPosts(postList);
+
+      console.log('Danh sách bài viết:', postList);
+
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="list-posts">
-      {posts.map(post => (
-        <Post key={post.id} post={post} />
-      ))}
+      {posts.length > 0 ? (
+        posts.map(post => (
+          <Post
+            key={post.id}
+            userId={post.userId}
+            createAt={post.timeAgo}
+            postImage={post.postImage}
+            content={post.description}
+            likes={post.likes}
+            comments={post.comments}
+            shares={post.shares}
+          />
+        ))
+      ) : (
+        <p>Không có bài viết nào.</p>
+      )}
     </div>
   );
 };
