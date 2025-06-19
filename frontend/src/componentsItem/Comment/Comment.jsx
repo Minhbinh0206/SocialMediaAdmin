@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ref, get, onValue, set, query, orderByChild, equalTo, getDatabase } from 'firebase/database';
+import { ref, get, onValue, set, query, orderByChild, equalTo, getDatabase, child } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
+import { FaHeart, FaRegComment } from 'react-icons/fa';
+import './Comment.css'; // Import your CSS styles
 
 const Comment = ({
   groupId,
@@ -62,24 +64,49 @@ const Comment = ({
     await set(likeRef, newData);
   };
 
-  const fetchStudent = async () => {
+  const fetchUserComment = async () => {
     const studentQuery = query(ref(db, 'Students'), orderByChild('userId'), equalTo(userCommentId));
+
     try {
       const snapshot = await get(studentQuery);
       if (snapshot.exists()) {
         const value = Object.values(snapshot.val())[0];
         setUserName(value.studentName);
         setUserAvatar(value.avatar);
+        setLoading(false);
+        return; // ✅ Nếu tìm thấy student thì return luôn
       }
     } catch (err) {
-      console.error('Error fetching student info:', err);
+      console.error('Lỗi khi tìm student:', err);
+    }
+
+    const adminPaths = ['AdminDefaults', 'AdminDepartments', 'AdminBusinesses'];
+    try {
+      for (let path of adminPaths) {
+        const snapshot = await get(child(ref(db), `Admins/${path}/${userCommentId}`));
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          setUserName(data.fullName || 'No name');
+          setUserAvatar(data.avatar || '/default-avatar.png');
+          setLoading(false);
+          return;
+        }
+      }
+
+      console.log('Không tìm thấy userCommentId ở Students hoặc Admins:', userCommentId);
+      setUserName('Không rõ');
+      setUserAvatar('/default-avatar.png');
+    } catch (err) {
+      console.error('Lỗi khi tìm admin:', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchStudent();
+    if (userCommentId) {
+      fetchUserComment();
+    }
   }, [userCommentId]);
 
   const formatDate = (dateStr) => {
@@ -94,22 +121,34 @@ const Comment = ({
   };
 
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-        <img src={userAvatar} alt="avatar" style={{ width: 40, height: 40, borderRadius: '50%', marginRight: 10 }} />
-        <div style={{ flex: 1, border: '1px solid #ddd', borderRadius: 10, padding: 10 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <div className="comment-wrapper">
+      <div className="comment-inner">
+        <img src={userAvatar} alt="avatar" className="comment-avatar" />
+        <div className="comment-content-box">
+          <div className="comment-header">
             <strong>{loading ? 'Đang tải...' : userName}</strong>
             <small>{formatDate(commentCreateAt)}</small>
           </div>
-          <p style={{ margin: '10px 0' }}>{content}</p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={handleLike} style={{ cursor: 'pointer' }}>
-              👍 {likeCount}
-            </button>
-            <button onClick={() => onTagUser({ commentId, userCommentId, postId, userPostId, userReplyId: '' })}>
-              💬 {replyCount}
-            </button>
+          <p className="comment-text">{content}</p>
+          <div className="post-actions">
+            <div className="action" onClick={handleLike}>
+              <FaHeart color={liked ? 'red' : 'gray'} />
+              <span>{likeCount}</span>
+            </div>
+            <div
+              className="action"
+              onClick={() =>
+                onTagUser({
+                  commentId: commentId,
+                  userCommentId: userCommentId,
+                  postId: postId,
+                  userReplyId: '', // vì đây là phản hồi bình luận chính
+                  userPostId: userPostId,
+                })
+              }
+            >
+              <FaRegComment /> <span>{replyCount}</span>
+            </div>
           </div>
         </div>
       </div>

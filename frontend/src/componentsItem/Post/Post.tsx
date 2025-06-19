@@ -3,13 +3,21 @@ import './Post.css';
 import { FaHeart, FaRegComment, FaShare } from 'react-icons/fa';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { ref, get, child, set, onValue } from 'firebase/database';
+import { ref, get, child, set, onValue, push, query, orderByChild, equalTo } from 'firebase/database';
 import { database } from '../../firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import ListComments from '../../components/ListComments/ListComments';
 
 
 dayjs.extend(relativeTime);
+
+interface Tag {
+  commentId: string;
+  userCommentId: string;
+  postId: string;
+  userReplyId: string;
+  userPostId: string;
+}
 
 const Post = ({
   key,
@@ -32,6 +40,9 @@ const Post = ({
   const currentUserId = auth.currentUser?.uid;
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
+  const [tag, setTag] = useState<Tag | null>();
+  const [commentCount, setCommentCount] = useState(0);
+  const [userNametag, setUserNameTag] = useState('');
 
   // Realtime like status
   useEffect(() => {
@@ -88,7 +99,6 @@ const Post = ({
         const snapshot = await get(child(ref(database), `Admins/${path}/${userId}`));
         if (snapshot.exists()) {
           const data = snapshot.val();
-          console.log('DATA FOUND:', data);
           setAdminAvatar(data.avatar || '/default-avatar.png');
           setAdminName(data.fullName || 'No name');
           return;
@@ -103,7 +113,25 @@ const Post = ({
     }
   }, [userId]);
 
-  console.log('Ảnh bài viết:', postImage);
+  useEffect(() => {
+    if (!groupId || !userId || !postId) return;
+
+    const commentsRef = ref(database, `Posts/${groupId}/${userId}/${postId}/comments`);
+
+    const unsubscribe = onValue(commentsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const commentData = data.commentData || {};
+
+        const commentList = Object.entries(commentData).map(([id, value]) => ({ id, ...(value as Record<string, any>) }));
+        setCommentCount(commentList.length); // Gán số lượng
+      } else {
+        setCommentCount(0);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [groupId, userId, postId]);
 
   const [isFading, setIsFading] = useState(false);
 
@@ -122,7 +150,6 @@ const Post = ({
   };
 
   const formatDate = (timestamp: number) => {
-    console.log('timestamp', timestamp);
     if (!timestamp || isNaN(timestamp)) return 'Thời gian không hợp lệ';
 
     const now = Date.now();
@@ -141,6 +168,113 @@ const Post = ({
     if (currentImageIndex < postImage.length - 1) {
       switchImage(currentImageIndex + 1);
     }
+  };
+
+  const handleComment = async () => {
+    if (!newComment.trim()) return;
+
+    if (tag != null) {
+      // Xử lý khi có tag
+      const replyRef = ref(database, `Posts/${groupId}/${userId}/${postId}/comments/commentData/${tag.commentId}/replies/replyData`);
+      const newReplyRef = push(replyRef);
+
+      const replyData = {
+        content: newComment.trim(),
+        createdAt: new Date().toISOString(),
+        replyLike: 0,
+        replyId: newReplyRef.key || '',
+        userReplyId: currentUserId || '',
+      };
+
+      await set(newReplyRef, replyData);
+
+      // Cập nhật lại count
+      const countRef = ref(database, `Posts/${groupId}/${userId}/${postId}/comments/commentData/${tag.commentId}/replies/count`);
+      await get(countRef).then(snapshot => {
+        const currentCount = snapshot.exists() ? snapshot.val() : 0;
+        set(countRef, currentCount + 1);
+      });
+
+      setTag(null);
+    }
+    else {
+      const commentDataRef = ref(database, `Posts/${groupId}/${userId}/${postId}/comments/commentData`);
+      const newCommentRef = push(commentDataRef); // Đẩy vào commentData
+
+      const commentData = {
+        userCommentId: currentUserId || '',
+        commentId: newCommentRef.key || '',
+        content: newComment.trim(),
+        commentCreateAt: new Date().toISOString(),
+        commentLike: 0,
+      };
+
+      // Ghi dữ liệu bình luận
+      await set(newCommentRef, commentData);
+
+      // Cập nhật lại count
+      const countRef = ref(database, `Posts/${groupId}/${userId}/${postId}/comments/count`);
+      await get(countRef).then(snapshot => {
+        const currentCount = snapshot.exists() ? snapshot.val() : 0;
+        set(countRef, currentCount + 1);
+      });
+    }
+
+    setNewComment('');
+  };
+
+  const findAdminByUserId = async (userId: string): Promise<string> => {
+    const adminPaths = ['AdminDefaults', 'AdminDepartments', 'AdminBusinesses'];
+    for (let path of adminPaths) {
+      const pathRef = ref(database, `Admins/${path}/${userId}`);
+      const snapshot = await get(pathRef);
+      console.log(`Đang kiểm tra path: Admins/${path}/${userId}`);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        console.log('Tìm thấy admin:', data);
+        return data.fullName || 'No name';
+      }
+    }
+    console.log('Không tìm thấy admin:', userId);
+    return 'Không rõ';
+  };
+
+  const findAdminOrStudentByUserId = async (userId: string): Promise<string> => {
+    const adminName = await findAdminByUserId(userId);
+    if (adminName !== 'Không rõ') return adminName;
+
+    console.log('Không phải admin, thử tìm student:', userId);
+
+    const studentQuery = query(ref(database, 'Students'), orderByChild('userId'), equalTo(userId));
+    const snapshot = await get(studentQuery);
+
+    if (snapshot.exists()) {
+      const firstItem: any = Object.values(snapshot.val())[0];
+      console.log('Tìm thấy student:', firstItem);
+      return firstItem.studentName || 'No name';
+    }
+
+    console.log('Không tìm thấy student:', userId);
+    return 'Không rõ';
+  };
+
+  const handleTagUser = async (userTag: Tag) => {
+    let userName = '';
+
+    if (userTag.userReplyId) {
+      userName = await findAdminByUserId(userTag.userReplyId);
+    }
+
+    if (!userTag.userReplyId && userTag.userCommentId) {
+      userName = await findAdminOrStudentByUserId(userTag.userCommentId);
+    }
+
+    setUserNameTag(userName); // Cập nhật state sau khi đã chắc chắn có tên
+    setTag(userTag); // Cập nhật tag
+  };
+
+  const removeTag = () => {
+    setTag(null); // Xóa tag
   };
 
   return (
@@ -201,7 +335,7 @@ const Post = ({
           </div>
 
           <div className="action" onClick={() => setShowCommentModal(true)} style={{ cursor: 'pointer' }}>
-            <FaRegComment /> <span>{comments}</span>
+            <FaRegComment /> <span>{commentCount}</span>
           </div>
 
           <div className="action">
@@ -212,7 +346,9 @@ const Post = ({
 
       {showCommentModal && (
         <div className="modal-backdrop" onClick={() => setShowCommentModal(false)}>
+
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-button" onClick={() => setShowCommentModal(false)}>×</button>
 
             {/* PHẦN 1: Hiển thị lại nội dung bài viết */}
             <div className="post">
@@ -271,7 +407,7 @@ const Post = ({
                 </div>
 
                 <div className="action" onClick={() => setShowCommentModal(true)} style={{ cursor: 'pointer' }}>
-                  <FaRegComment /> <span>{comments}</span>
+                  <FaRegComment /> <span>{commentCount}</span>
                 </div>
 
                 <div className="action">
@@ -283,38 +419,42 @@ const Post = ({
             {/* PHẦN 2: Danh sách bình luận */}
             <div className="modal-comments" style={{ margin: '15px 0' }}>
               <span className="title-comment"> Bình luận </span>
-              <ListComments postId={postId} groupId={groupId} userId={userId} />
+              <ListComments postId={postId} groupId={groupId} userId={userId} onTagUser={handleTagUser} />
             </div>
+          </div>
 
-            {/* PHẦN 3: Nhập bình luận */}
-            <div className="modal-input">
+          {/* Thanh nhập bình luận đặt riêng bên ngoài để dính đáy */}
+          <div className="modal-input" onClick={(e) => e.stopPropagation()}>
+            {tag && (
+              <div className="tag-preview">
+                <span>Đang phản hồi <strong>@{userNametag}</strong></span>
+                <button className="cancel-tag" onClick={removeTag}>×</button>
+              </div>
+            )}
+            <div className="input-send-container">
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Nhập bình luận..."
-                style={{ width: '100%', padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                className="comment-textarea"
+                rows={1}
               />
-            </div>
-
-            {/* PHẦN 4: Nút đóng và gửi */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-              <button onClick={() => setShowCommentModal(false)} style={{ marginRight: '10px' }}>Đóng</button>
               <button
+                className="send-button"
                 onClick={() => {
                   console.log('Bình luận:', newComment);
-                  // TODO: Gửi bình luận lên Firebase tại đây
+                  handleComment();
                   setNewComment('');
-                  setShowCommentModal(false);
                 }}
               >
                 Gửi
               </button>
             </div>
-
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 

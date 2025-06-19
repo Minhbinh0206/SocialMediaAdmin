@@ -4,7 +4,7 @@ import { database } from '../../firebaseConfig';
 import './ListComments.css'; // bạn có thể tạo CSS riêng nếu cần
 import Comment from '../../componentsItem/Comment/Comment';
 
-const ListComments = ({ groupId, userId, postId }) => {
+const ListComments = ({ groupId, userId, postId, onTagUser }) => {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -44,12 +44,14 @@ const ListComments = ({ groupId, userId, postId }) => {
           <Comment
             key={comment.commentId}
             groupId={groupId}
+            userPostId={userId}
             postId={postId}
             commentId={comment.commentId}
             userCommentId={comment.userCommentId}
             content={comment.content}
             commentCreateAt={comment.commentCreateAt}
             commentLike={comment.commentLike}
+            onTagUser={onTagUser}
           />
         ))
       )}

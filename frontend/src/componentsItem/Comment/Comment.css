@@ -64,3 +64,78 @@
   margin-left: 50px;
   margin-top: 10px;
 }
+
+.item-comment .comment-footer button {
+  background: #f0f2f5;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.item-comment .comment-footer button:hover {
+  background-color: #e4e6eb;
+  color: #007bff;
+}
+
+.comment-wrapper {
+  margin-bottom: 20px;
+}
+
+.comment-inner {
+  display: flex;
+  align-items: flex-start;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.comment-content-box {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.comment-text {
+  margin: 10px 0;
+}
+
+/* Dùng lại class .post-actions và .action nếu đã có */
+.post-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 8px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action:hover {
+  color: #000;
+}
+
+.action svg {
+  margin-right: 6px;
+}
+

@@ -169,7 +169,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,9 +179,17 @@
 .modal-content {
   background: #fff;
   border-radius: 12px;
-  max-height: 90vh;
+  max-height: 70vh;
   overflow-y: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  width: 600px;
+  position: relative;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding-bottom: 80px;
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none;
 }
 
 .modal-comments {
@@ -194,4 +202,107 @@
   color: #333;
   margin-bottom: 12px;
   display: block;
+}
+
+/* Nút đóng X góc phải */
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 28px;
+  border: none;
+  background: none;
+  padding: 4px;
+  color: #000;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.close-button:hover {
+  color: red;
+}
+
+/* Ô nhập bình luận */
+/* Container chứa textarea và nút gửi */
+.input-send-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* Ô nhập bình luận */
+.comment-textarea {
+  flex: 1;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.comment-textarea:focus {
+  border-color: #007bff;
+}
+
+/* Nút gửi */
+.send-button {
+  height: 40px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  align-self: flex-end;
+}
+
+.send-button:hover {
+  background-color: #0056b3;
+}
+
+/* Thanh nhập bình luận dính dưới */
+.modal-input {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  border-radius: 15px;
+  width: 600px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  z-index: 1100;
+}
+
+.tag-preview {
+  display: flex;
+  align-items: center;
+  background-color: #f0f2f5;
+  border-radius: 16px;
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+  max-width: 100%;
+  justify-content: space-between;
+}
+
+.tag-preview strong {
+  color: #1876f2;
+}
+
+.cancel-tag {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  margin-left: 10px;
+  line-height: 1;
 }
