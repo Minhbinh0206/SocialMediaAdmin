@@ -1,0 +1,66 @@
+.item-comment {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.item-comment .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.item-comment .comment-card {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.item-comment .comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.item-comment .comment-content {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+.item-comment .comment-footer {
+  display: flex;
+  gap: 10px;
+}
+
+.item-comment .comment-footer button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.item-comment .comment-footer button:hover {
+  color: #007bff;
+}
+
+.item-comment .expand-toggle {
+  margin-left: 50px;
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.item-comment .replies {
+  margin-left: 50px;
+  margin-top: 10px;
+}

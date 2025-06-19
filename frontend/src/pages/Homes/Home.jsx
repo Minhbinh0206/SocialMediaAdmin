@@ -13,7 +13,7 @@ const HomePage = () => {
           <HomePersonal />
         </div>
         <div className="column middle-column">
-          <h3 style={{ fontSize: 25, padding: '0 30px'}}>Bảng tin</h3>
+          <h3 style={{ fontSize: 25, padding: '0 30px' }}>Bảng tin</h3>
           <ListPost />
         </div>
         <div className="column right-column">

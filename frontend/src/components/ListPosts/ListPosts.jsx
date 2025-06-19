@@ -20,11 +20,14 @@ const ListPost = () => {
 
             postList.push({
               id: postData.postId,
+              groupId: postData.groupId || '',
               userId: postData.userId || '',
+              postId: postData.postId || '',
               timeAgo: postData.createAt || '',
               postImage: Array.isArray(postData.postImage) ? postData.postImage : [],
               description: postData.content,
-              likes: postData.postLike || 0,
+              likes: postData.postLike?.count || 0,
+              likedUserIds: Array.isArray(postData.postLike?.userIds) ? postData.postLike.userIds : [],
               comments: 0,
               shares: 0,
             });
@@ -50,11 +53,13 @@ const ListPost = () => {
         posts.map(post => (
           <Post
             key={post.id}
+            postId={post.postId}
             userId={post.userId}
             createAt={post.timeAgo}
             postImage={post.postImage}
             content={post.description}
             likes={post.likes}
+            groupId={post.groupId}
             comments={post.comments}
             shares={post.shares}
           />
