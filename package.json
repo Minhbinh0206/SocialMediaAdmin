@@ -15,6 +15,7 @@
   "dependencies": {
     "concurrently": "^9.1.2",
     "dayjs": "^1.11.13",
+    "html-truncate": "^1.2.2",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.6.2"
   }

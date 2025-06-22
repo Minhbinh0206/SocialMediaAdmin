@@ -3,6 +3,7 @@ import { ref, get, onValue, set, query, orderByChild, equalTo, getDatabase, chil
 import { getAuth } from 'firebase/auth';
 import { FaHeart, FaRegComment } from 'react-icons/fa';
 import './Comment.css'; // Import your CSS styles
+import Reply from '../Reply/Reply';
 
 const Comment = ({
   groupId,
@@ -103,12 +104,6 @@ const Comment = ({
     }
   };
 
-  useEffect(() => {
-    if (userCommentId) {
-      fetchUserComment();
-    }
-  }, [userCommentId]);
-
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const now = new Date();
@@ -119,6 +114,51 @@ const Comment = ({
     if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`;
     return `${Math.floor(diff / 86400)} ngày trước`;
   };
+
+  const fetchReplies = () => {
+    const db = getDatabase();
+    const repliesRef = ref(db, `Posts/${groupId}/${userPostId}/${postId}/comments/commentData/${commentId}/replies`);
+
+    onValue(repliesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const count = data.count || 0;
+        const repliesObject = data.replyData || {}; // ✅ Thêm dòng này
+
+        const repliesList = Object.values(repliesObject)
+          .map((item) => ({
+            replyId: item.replyId,
+            userPostId,
+            groupId,
+            postId,
+            commentId,
+            userCommentId,
+            userReplyId: item.userReplyId,
+            content: item.content,
+            createdAt: item.commentCreateAt,
+            replyLike: {
+              count: item.commentLike?.count || 0,
+              userIds: item.commentLike?.userIds || [],
+            },
+            onTagUser,
+          }))
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+        setReplies(repliesList);
+        setReplyCount(count);
+      } else {
+        setReplies([]);
+        setReplyCount(0);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchReplies();
+    if (userCommentId) {
+      fetchUserComment();
+    }
+  }, [userCommentId]);
 
   return (
     <div className="comment-wrapper">
@@ -138,13 +178,7 @@ const Comment = ({
             <div
               className="action"
               onClick={() =>
-                onTagUser({
-                  commentId: commentId,
-                  userCommentId: userCommentId,
-                  postId: postId,
-                  userReplyId: '', // vì đây là phản hồi bình luận chính
-                  userPostId: userPostId,
-                })
+                onTagUser({ commentId, userCommentId, postId, userPostId, userReplyId: '' })
               }
             >
               <FaRegComment /> <span>{replyCount}</span>
@@ -153,10 +187,10 @@ const Comment = ({
         </div>
       </div>
 
-      {/* {replies.length > 0 && (
+      {replies.length > 0 && (
         <div style={{ marginLeft: 50 }}>
           <button
-            style={{ marginTop: 10, marginBottom: 5, background: 'none', border: 'none', color: 'blue' }}
+            style={{ cursor: 'pointer', marginTop: 10, marginBottom: 5, background: 'none', border: 'none', color: 'black' }}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? 'Thu gọn' : `Hiển thị thêm ${replies.length} phản hồi...`}
@@ -165,7 +199,7 @@ const Comment = ({
           {isExpanded && (
             <div>
               {replies.map((reply) => (
-                <ItemReply
+                <Reply
                   key={reply.replyId}
                   groupId={groupId}
                   replyId={reply.replyId}
@@ -183,7 +217,7 @@ const Comment = ({
             </div>
           )}
         </div>
-      )} */}
+      )}
     </div>
   );
 };

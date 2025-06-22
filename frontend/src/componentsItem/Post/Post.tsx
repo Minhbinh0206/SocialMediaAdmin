@@ -7,16 +7,14 @@ import { ref, get, child, set, onValue, push, query, orderByChild, equalTo } fro
 import { database } from '../../firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import ListComments from '../../components/ListComments/ListComments';
+import truncate from 'html-truncate';
 
 
 dayjs.extend(relativeTime);
 
 interface Tag {
-  commentId: string;
   userCommentId: string;
-  postId: string;
   userReplyId: string;
-  userPostId: string;
 }
 
 const Post = ({
@@ -40,7 +38,9 @@ const Post = ({
   const currentUserId = auth.currentUser?.uid;
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
-  const [tag, setTag] = useState<Tag | null>();
+  const [tag, setTag] = useState(null);
+  const [showFullContent, setShowFullContent] = useState(false);
+
   const [commentCount, setCommentCount] = useState(0);
   const [userNametag, setUserNameTag] = useState('');
 
@@ -180,7 +180,7 @@ const Post = ({
 
       const replyData = {
         content: newComment.trim(),
-        createdAt: new Date().toISOString(),
+        createdAt: Date.now(),
         replyLike: 0,
         replyId: newReplyRef.key || '',
         userReplyId: currentUserId || '',
@@ -205,7 +205,7 @@ const Post = ({
         userCommentId: currentUserId || '',
         commentId: newCommentRef.key || '',
         content: newComment.trim(),
-        commentCreateAt: new Date().toISOString(),
+        commentCreateAt: Date.now(),
         commentLike: 0,
       };
 
@@ -239,6 +239,20 @@ const Post = ({
     return 'Không rõ';
   };
 
+  const findStudentByUserId = async (userId: string): Promise<string> => {
+    const studentQuery = query(ref(database, 'Students'), orderByChild('userId'), equalTo(userId));
+    const snapshot = await get(studentQuery);
+
+    if (snapshot.exists()) {
+      const firstItem: any = Object.values(snapshot.val())[0];
+      console.log('Tìm thấy student:', firstItem);
+      return firstItem.studentName || 'No name';
+    }
+
+    console.log('Không tìm thấy student:', userId);
+    return 'Không rõ';
+  }
+
   const findAdminOrStudentByUserId = async (userId: string): Promise<string> => {
     const adminName = await findAdminByUserId(userId);
     if (adminName !== 'Không rõ') return adminName;
@@ -263,18 +277,46 @@ const Post = ({
 
     if (userTag.userReplyId) {
       userName = await findAdminByUserId(userTag.userReplyId);
+      if (userName === 'Không rõ') {
+        userName = await findStudentByUserId(userTag.userReplyId);
+      }
     }
 
     if (!userTag.userReplyId && userTag.userCommentId) {
       userName = await findAdminOrStudentByUserId(userTag.userCommentId);
     }
 
-    setUserNameTag(userName); // Cập nhật state sau khi đã chắc chắn có tên
-    setTag(userTag); // Cập nhật tag
+    setUserNameTag(userName);
+    setTag(userTag);
   };
 
   const removeTag = () => {
     setTag(null); // Xóa tag
+  };
+
+  const renderContent = () => {
+    if (showFullContent || content.length <= 80) {
+      return (
+        <>
+          <div dangerouslySetInnerHTML={{ __html: content }} />
+          {content.length > 80 && (
+            <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowFullContent(false)}>
+              Ẩn bớt
+            </span>
+          )}
+        </>
+      );
+    } else {
+      const truncated = truncate(content, 80); // Cắt HTML, giữ lại <b>, <i>, <u>, ...
+      return (
+        <>
+          <div dangerouslySetInnerHTML={{ __html: truncated }} />
+          <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowFullContent(true)}>
+            ... Xem thêm
+          </span>
+        </>
+      );
+    }
   };
 
   return (
@@ -291,7 +333,7 @@ const Post = ({
           <div className="post-options">⋮</div>
         </div>
 
-        <div className="post-content">{content}</div>
+        {renderContent()}
 
         {postImage.length > 0 && (
           <div className="post-image">
@@ -363,7 +405,7 @@ const Post = ({
                 <div className="post-options">⋮</div>
               </div>
 
-              <div className="post-content">{content}</div>
+              <p dangerouslySetInnerHTML={{ __html: content }}></p>
 
               {postImage.length > 0 && (
                 <div className="post-image">

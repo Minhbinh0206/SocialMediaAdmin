@@ -13,6 +13,9 @@ const CreatePost = ({ onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [content, setContent] = useState('');
   const [filter, setFilter] = useState(false);
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
   const [step, setStep] = useState(1);
   const [selectedTarget, setSelectedTarget] = useState("all");
   const [departments, setDepartments] = useState([]);
@@ -156,6 +159,31 @@ const CreatePost = ({ onClose }) => {
     }
   };
 
+  const toggleStyle = (style) => {
+    const commandMap = {
+      bold: 'bold',
+      italic: 'italic',
+      underline: 'underline',
+    };
+
+    document.execCommand(commandMap[style], false, null);
+
+    if (style === 'bold') setIsBold(prev => !prev);
+    if (style === 'italic') setIsItalic(prev => !prev);
+    if (style === 'underline') setIsUnderline(prev => !prev);
+  };
+
+  useEffect(() => {
+    const checkFormatting = () => {
+      setIsBold(document.queryCommandState('bold'));
+      setIsItalic(document.queryCommandState('italic'));
+      setIsUnderline(document.queryCommandState('underline'));
+    };
+
+    document.addEventListener('selectionchange', checkFormatting);
+    return () => document.removeEventListener('selectionchange', checkFormatting);
+  }, []);
+
   return (
     <div className="modal-backdrop">
       <div className="modal-transition-wrapper">
@@ -173,13 +201,24 @@ const CreatePost = ({ onClose }) => {
               <span className="name">{user?.fullName || user?.email}</span>
             </div>
 
-            <textarea
-              className="text-area"
-              placeholder="Nội dung bài viết..."
-              rows="3"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <div className='content-container'>
+              <div
+                id="contentTextArea"
+                className="text-area editable-area"
+                placeholder="Nhập nội dung bài viết tại đây..."
+                contentEditable
+                data-placeholder="Nội dung bài viết..."
+                ref={fileInputRef}
+                onInput={(e) => setContent(e.currentTarget.innerHTML)}
+                suppressContentEditableWarning={true}
+              ></div>
+
+              <div className="format-buttons">
+                <button type="button" onClick={() => toggleStyle('bold')} className={isBold ? 'active' : ''}><b>B</b></button>
+                <button type="button" onClick={() => toggleStyle('italic')} className={isItalic ? 'active' : ''}><i>I</i></button>
+                <button type="button" onClick={() => toggleStyle('underline')} className={isUnderline ? 'active' : ''}><u>U</u></button>
+              </div>
+            </div>
 
             {selectedImages.length > 0 && (
               <div className="image-preview-wrapper">
