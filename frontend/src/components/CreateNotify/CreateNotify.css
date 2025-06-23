@@ -1,0 +1,313 @@
+/* Title của thông báo */
+.notify-title {
+  border: none;
+  outline: none;
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  background-color: transparent;
+  font-weight: bold;
+  max-height: 100px;
+  min-height: 100px;
+}
+
+/* Form bố trí các phần tử */
+.form {
+  position: relative;
+  display: flex;  
+  flex-direction: column;
+  padding: 0 20px;
+  overflow: hidden;
+  min-height: auto;
+}
+
+/* Ngày tạo thông báo */
+.notify-date {
+  font-size: 14px;
+  color: #888;
+  text-align: end;
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Nội dung thông báo */
+.notify-content-place {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.notify-content {
+  width: 100%;
+  min-height: 160px;
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  margin-top: 5px;
+  max-height: 200px;
+}
+
+.notify-content:focus {
+  outline: none;
+  border-color: #26a69a; 
+  box-shadow: 0 0 4px rgba(38, 166, 154, 0.4);
+}
+
+.notify-content::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Phần hiển thị tên người gửi */
+.personal {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  align-items: center;
+}
+
+.personal-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #555;
+  align-items: end;
+}
+
+.personal-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #004d40;
+}
+
+/* Thông tin admin */
+.notify-admin {
+  font-size: 15px;
+  color: #888;
+  text-align: start;
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* Phần filter */
+.notify-filter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.notify-filter-header {
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notify-select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.notify-list-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 50px;
+  min-height: 70px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 0 15px 10px 15px;
+  margin-top: 5px;
+}
+
+/* Tìm kiếm sinh viên */
+.search-student {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  background-color: #fff;
+  transition: border-color 0.3s ease;
+  padding: 5px 0 5px 10px;
+}
+
+/* Container tìm kiếm */
+.search-student-container {
+  position: relative;
+  max-width: 50%;
+  width: 50%;
+  margin-right: 10px;
+}
+
+/* Popup kết quả tìm kiếm */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 1000;
+  max-height: 180px; /* Tương đương ~3 dòng */
+  overflow-y: auto;
+  margin-top: 4px;
+  padding: 4px 0;
+}
+
+/* Thanh cuộn */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+/* Kết quả tìm kiếm sinh viên */
+.student-result {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.student-result:hover {
+  background-color: #f5f5f5;
+}
+
+/* Phần nội dung kết quả */
+.popup-result {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.popup-result .name {
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-result .mssv {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Hiển thị tags đã chọn */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Style tag đã chọn */
+.tag {
+  background-color: #e0f7fa;
+  border: 1px solid #26a69a;
+  color: #00796b;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remove-tag {
+  cursor: pointer;
+  font-weight: bold;
+  color: #004d40;
+}
+
+.submit-btnn {
+  background-color: #26c6da;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.remove-tag {
+  position: absolute;
+  top: -3px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  color: red;
+}
+
+.popup-result-tag {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid #00796b;
+  padding: 6px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  background-color: #e0f7fa;
+}
+
+.remove-tagg {
+  cursor: pointer;
+  font-size: 15px;
+  color: red;
+}
+
+.notify-ha{
+  display: flex;
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  color: #ccc;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  height: 50px;
+  width: 100%;
+  }
+
+  .no-student-message {
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+    font-style: italic;
+  }

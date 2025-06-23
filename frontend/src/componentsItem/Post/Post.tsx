@@ -9,12 +9,12 @@ import { getAuth } from 'firebase/auth';
 import ListComments from '../../components/ListComments/ListComments';
 import truncate from 'html-truncate';
 
-
 dayjs.extend(relativeTime);
 
 interface Tag {
   userCommentId: string;
   userReplyId: string;
+  commentId: string;
 }
 
 const Post = ({
@@ -38,7 +38,7 @@ const Post = ({
   const currentUserId = auth.currentUser?.uid;
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
-  const [tag, setTag] = useState(null);
+  const [tag, setTag] = useState(null as Tag | null);
   const [showFullContent, setShowFullContent] = useState(false);
 
   const [commentCount, setCommentCount] = useState(0);
@@ -240,7 +240,7 @@ const Post = ({
   };
 
   const findStudentByUserId = async (userId: string): Promise<string> => {
-    const studentQuery = query(ref(database, 'Students'), orderByChild('userId'), equalTo(userId));
+    const studentQuery = query(ref(database, 'Users'), orderByChild('userId'), equalTo(userId));
     const snapshot = await get(studentQuery);
 
     if (snapshot.exists()) {
@@ -259,7 +259,7 @@ const Post = ({
 
     console.log('Không phải admin, thử tìm student:', userId);
 
-    const studentQuery = query(ref(database, 'Students'), orderByChild('userId'), equalTo(userId));
+    const studentQuery = query(ref(database, 'Users'), orderByChild('userId'), equalTo(userId));
     const snapshot = await get(studentQuery);
 
     if (snapshot.exists()) {
@@ -307,7 +307,7 @@ const Post = ({
         </>
       );
     } else {
-      const truncated = truncate(content, 80); // Cắt HTML, giữ lại <b>, <i>, <u>, ...
+      const truncated = truncate(content, 80, {}); // Cắt HTML, giữ lại <b>, <i>, <u>, ...
       return (
         <>
           <div dangerouslySetInnerHTML={{ __html: truncated }} />

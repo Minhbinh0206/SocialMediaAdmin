@@ -25,6 +25,13 @@ const CreatePost = ({ onClose }) => {
 
   const fileInputRef = useRef();
 
+  useEffect(() => {
+    if (user?.role === 'AdminDepartments' && user.departmentId) {
+      setSelectedDepartmentId(user.departmentId);
+    }
+  }, [user]);
+
+
   // Lấy user từ Firebase Auth và kiểm tra quyền admin
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
@@ -75,6 +82,29 @@ const CreatePost = ({ onClose }) => {
     const urls = files.map((file) => URL.createObjectURL(file));
     setSelectedImages((prev) => [...prev, ...urls]);
     setImageFiles((prev) => [...prev, ...files]);
+  };
+
+  const getTargetOptions = () => {
+    switch (user?.role) {
+      case 'AdminDefaults':
+        return [
+          { value: 'all', label: 'Học sinh toàn trường' },
+          { value: 'multiDepartments', label: 'Học sinh thuộc các khoa' },
+          { value: 'myDepartment', label: 'Học sinh trong khoa' },
+        ];
+      case 'AdminDepartments':
+        return [
+          { value: 'all', label: 'Học sinh toàn trường' },
+          { value: 'myDepartment', label: 'Học sinh trong khoa' },
+        ];
+      case 'AdminBusinesses':
+        return [
+          { value: 'all', label: 'Học sinh toàn trường' },
+          { value: 'multiDepartments', label: 'Học sinh thuộc khoa liên kết' },
+        ];
+      default:
+        return [];
+    }
   };
 
   const handlePrevImage = () => setCurrentImageIndex(prev => (prev > 0 ? prev - 1 : prev));
@@ -269,73 +299,77 @@ const CreatePost = ({ onClose }) => {
           </div>
 
           {/* Step 2 */}
-          <div className="modal-box box-2">
-            <div className="title">Bạn muốn đăng bài viết này đến?</div>
+          {step === 2 && (
+            <div className="modal-box box-2">
+              <div className="title">Bạn muốn đăng bài viết này đến?</div>
 
-            <div style={{ marginBottom: '15px' }}>
-              <label htmlFor="targetSelect" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
-                Chọn đối tượng hiển thị:
-              </label>
-              <select
-                id="targetSelect"
-                value={selectedTarget}
-                onChange={(e) => {
-                  setSelectedTarget(e.target.value);
-                  setSelectedDepartmentId('');
-                  setSelectedDepartmentIds([]);
-                }}
-                className="target-select"
-              >
-                <option value="all">Học sinh toàn trường</option>
-                <option value="multiDepartments">Học sinh thuộc các khoa</option>
-                <option value="myDepartment">Học sinh trong Khoa</option>
-              </select>
-            </div>
-
-            {selectedTarget === 'multiDepartments' && (
-              <div className="department-checkboxes">
-                {departments.map((dept) => (
-                  <label key={dept.id} className="checkbox-item">
-                    <input
-                      type="checkbox"
-                      value={dept.id}
-                      checked={selectedDepartmentIds.includes(dept.id)}
-                      onChange={(e) => {
-                        const checked = e.target.checked;
-                        const id = e.target.value;
-                        setSelectedDepartmentIds((prev) =>
-                          checked ? [...prev, id] : prev.filter((d) => d !== id)
-                        );
-                      }}
-                    />
-                    {dept.departmentName}
-                  </label>
-                ))}
+              <div style={{ marginBottom: '15px' }}>
+                <label htmlFor="targetSelect" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                  Chọn đối tượng hiển thị:
+                </label>
+                <select
+                  id="targetSelect"
+                  value={selectedTarget}
+                  onChange={(e) => {
+                    setSelectedTarget(e.target.value);
+                    setSelectedDepartmentId('');
+                    setSelectedDepartmentIds([]);
+                  }}
+                  className="target-select"
+                >
+                  {getTargetOptions().map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
 
-            {selectedTarget === 'myDepartment' && (
-              <div className="department-radio-group">
-                {departments.map((dept) => (
-                  <label key={dept.id} className="radio-item">
-                    <input
-                      type="radio"
-                      name="department"
-                      value={dept.id}
-                      checked={selectedDepartmentId === dept.id}
-                      onChange={(e) => setSelectedDepartmentId(e.target.value)}
-                    />
-                    {dept.departmentName}
-                  </label>
-                ))}
+              {selectedTarget === 'multiDepartments' && (
+                <div className="department-checkboxes">
+                  {departments.map((dept) => (
+                    <label key={dept.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        value={dept.id}
+                        checked={selectedDepartmentIds.includes(dept.id)}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          const id = e.target.value;
+                          setSelectedDepartmentIds((prev) =>
+                            checked ? [...prev, id] : prev.filter((d) => d !== id)
+                          );
+                        }}
+                      />
+                      {dept.departmentName}
+                    </label>
+                  ))}
+                </div>
+              )}
+
+              {selectedTarget === 'myDepartment' && user?.role !== 'AdminDepartments' && (
+                <div className="department-radio-group">
+                  {departments.map((dept) => (
+                    <label key={dept.id} className="radio-item">
+                      <input
+                        type="radio"
+                        name="department"
+                        value={dept.id}
+                        checked={selectedDepartmentId === dept.id}
+                        onChange={(e) => setSelectedDepartmentId(e.target.value)}
+                      />
+                      {dept.departmentName}
+                    </label>
+                  ))}
+                </div>
+              )}
+
+              <div className="actions">
+                <button className="cancel-btn" onClick={() => setStep(1)}>Quay lại</button>
+                <button className="submit-btn" onClick={handleSubmit}>Đăng bài</button>
               </div>
-            )}
-
-            <div className="actions">
-              <button className="cancel-btn" onClick={() => setStep(1)}>Quay lại</button>
-              <button className="submit-btn" onClick={handleSubmit}>Đăng bài</button>
             </div>
-          </div>
+          )}
 
         </div>
       </div>

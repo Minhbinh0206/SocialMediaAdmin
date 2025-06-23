@@ -17,7 +17,7 @@ const HomePersonal = () => {
         try {
           const dbRef = ref(database);
 
-          const adminTypes = ['AdminBusinesses', 'AdminDefaults', 'AdminDepartments'];
+          const adminTypes = ['AdminBussinesses', 'AdminDefaults', 'AdminDepartments'];
           let foundData = null;
 
           for (const type of adminTypes) {
@@ -61,8 +61,8 @@ const HomePersonal = () => {
       <div className='manager-container'>
         <div className='home' onClick={() => navigate('/home')}>Home</div>
         <div className='posts' onClick={() => navigate('/posts')}>Bài viết</div>
-        <div className='notify'>Thông báo</div>
-        <div className='event'>Sự kiện</div>
+        <div className='notify' onClick={() => navigate('/notifies')}>Thông báo</div>
+        <div className='event' onClick={() => navigate('/events')}>Sự kiện</div>
       </div>
     </div>
   );

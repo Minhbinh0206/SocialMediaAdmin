@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/Logins/Login';
 import PostPage from './pages/Posts/PostPage';
 import HomePage from './pages/Homes/Home';
+import NotifyPage from './pages/Notify/NotifyPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/posts" element={<PostPage />} />
+        <Route path="/notifies" element={<NotifyPage />} />
       </Routes>
     </Router>
   );
