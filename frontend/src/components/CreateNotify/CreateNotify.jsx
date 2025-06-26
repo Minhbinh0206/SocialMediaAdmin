@@ -333,7 +333,7 @@ const CreateNotify = () => {
       title,
       content,
       createAt,
-      userid: userId,
+      userId: userId,
       notifyId,
       filterData,
     };
@@ -396,7 +396,34 @@ const CreateNotify = () => {
             <div className="notify-admin">Gửi thông báo đến:</div>
             {['personalStudents', 'byClass', 'personalDepartmentStudents'].includes(filterType) && (
               <div className="search-student-container">
-                {filterType === 'personalStudents' || filterType === 'personalDepartmentStudents' && (
+                {filterType === 'personalStudents' && (
+                  <>
+                    <input
+                      type="text"
+                      className="search-student"
+                      placeholder="Nhập MSSV để tìm..."
+                      value={searchStudentId}
+                      onChange={(e) => setSearchStudentId(e.target.value)}
+                    />
+                    {filteredStudents.length > 0 && (
+                      <div className="search-results">
+                        {filteredStudents.map(([id, student]) => (
+                          <div
+                            key={id}
+                            className="student-result"
+                            onClick={() => handleSelectStudent(student, id)}
+                          >
+                            <div className="popup-result">
+                              <span className="name">{student.studentName}</span>
+                              <span className="mssv">{student.studentNumber}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+                {filterType === 'personalDepartmentStudents' && (
                   <>
                     <input
                       type="text"
@@ -407,7 +434,6 @@ const CreateNotify = () => {
                     />
                     {searchStudentId.trim() !== '' && (
                       <>
-
                         {filteredStudents.length > 0 ? (
                           <div className="search-results">
                             {filteredStudents.map(([id, student]) => (
@@ -526,7 +552,7 @@ const CreateNotify = () => {
             </div>
           )}
 
-          {filterType === 'personalStudents' || filterType === 'personalDepartmentStudents' && selectedStudents.length > 0 && (
+          {(['personalStudents', 'personalDepartmentStudents'].includes(filterType)) && selectedStudents.length > 0 && (
             <div className="selected-tags">
               {selectedStudents.map((stu) => (
                 <div className="tag" key={stu.studentNumber}>
@@ -538,6 +564,7 @@ const CreateNotify = () => {
               ))}
             </div>
           )}
+
         </div>
 
         <button type="submit" className="submit-btnn">
