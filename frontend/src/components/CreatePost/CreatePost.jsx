@@ -181,6 +181,8 @@ const CreatePost = ({ onClose }) => {
       };
 
       await set(dbRef(database, `Posts/${groupId}/${user.uid}/${postId}`), postData);
+      await set(dbRef(database, `PostDefaults/${postId}`), postData);
+
       alert('Đăng bài thành công!');
       onClose();
     } catch (err) {
