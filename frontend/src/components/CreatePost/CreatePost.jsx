@@ -5,6 +5,7 @@ import { auth, storage, database } from '../../firebaseConfig';
 import { ref as dbRef, get, child, set, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 as uuidv4 } from 'uuid';
+import CreateSurvey from '../CreateSurvey/CreateSurvey';
 
 const CreatePost = ({ onClose }) => {
   const [user, setUser] = useState(null);
@@ -22,6 +23,7 @@ const CreatePost = ({ onClose }) => {
   const [selectedDepartments, setSelectedDepartments] = useState([]);
   const [selectedDepartmentIds, setSelectedDepartmentIds] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState('');
+  const [showSurvey, setShowSurvey] = useState(false);
 
   const fileInputRef = useRef();
 
@@ -219,162 +221,171 @@ const CreatePost = ({ onClose }) => {
   return (
     <div className="modal-backdrop">
       <div className="modal-transition-wrapper">
-        <div className={`modal-slide slide-step-${step}`}>
+        {!showSurvey && (
+          <div className={`modal-slide slide-step-${step}`}>
 
-          {/* Step 1 */}
-          <div className="modal-box">
-            <div className="title">Tạo bài viết</div>
-            <div className="personal-container">
-              {user?.avatar ? (
-                <img src={user.avatar} alt="avatar" className="avatar" />
-              ) : (
-                <div className="avatar placeholder">🙂</div>
-              )}
-              <span className="name">{user?.fullName || user?.email}</span>
-            </div>
-
-            <div className='content-container'>
-              <div
-                id="contentTextArea"
-                className="text-area editable-area"
-                placeholder="Nhập nội dung bài viết tại đây..."
-                contentEditable
-                data-placeholder="Nội dung bài viết..."
-                ref={fileInputRef}
-                onInput={(e) => setContent(e.currentTarget.innerHTML)}
-                suppressContentEditableWarning={true}
-              ></div>
-
-              <div className="format-buttons">
-                <button type="button" onClick={() => toggleStyle('bold')} className={isBold ? 'active' : ''}><b>B</b></button>
-                <button type="button" onClick={() => toggleStyle('italic')} className={isItalic ? 'active' : ''}><i>I</i></button>
-                <button type="button" onClick={() => toggleStyle('underline')} className={isUnderline ? 'active' : ''}><u>U</u></button>
+            {/* Step 1 */}
+            <div className="modal-box">
+              <div className="title">Tạo bài viết</div>
+              <div className="personal-container">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="avatar" className="avatar" />
+                ) : (
+                  <div className="avatar placeholder">🙂</div>
+                )}
+                <span className="name">{user?.fullName || user?.email}</span>
               </div>
-            </div>
 
-            {selectedImages.length > 0 && (
-              <div className="image-preview-wrapper">
-                <button className="arrow left" onClick={handlePrevImage} disabled={currentImageIndex === 0}>
-                  &#10094;
-                </button>
-                <div className="slider-track" style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}>
-                  {selectedImages.map((url, idx) => (
-                    <img key={idx} src={url} className="image-post" />
-                  ))}
+              <div className='content-container'>
+                <div
+                  id="contentTextArea"
+                  className="text-area editable-area"
+                  placeholder="Nhập nội dung bài viết tại đây..."
+                  contentEditable
+                  data-placeholder="Nội dung bài viết..."
+                  ref={fileInputRef}
+                  onInput={(e) => setContent(e.currentTarget.innerHTML)}
+                  suppressContentEditableWarning={true}
+                ></div>
+
+                <div className="format-buttons">
+                  <button type="button" onClick={() => toggleStyle('bold')} className={isBold ? 'active' : ''}><b>B</b></button>
+                  <button type="button" onClick={() => toggleStyle('italic')} className={isItalic ? 'active' : ''}><i>I</i></button>
+                  <button type="button" onClick={() => toggleStyle('underline')} className={isUnderline ? 'active' : ''}><u>U</u></button>
                 </div>
-                <button
-                  className="arrow right"
-                  onClick={handleNextImage}
-                  disabled={currentImageIndex === selectedImages.length - 1}
-                >
-                  &#10095;
-                </button>
-                <button className="remove-image-btn" onClick={handleRemoveCurrentImage}>
-                  &times;
-                </button>
-              </div>
-            )}
-
-            <div className="more-options">
-              <button className="option-btn" onClick={() => fileInputRef.current.click()}>
-                <FiImage className="option-icon" />
-                <span>Ảnh</span>
-              </button>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={handleImageChange}
-              />
-              <button className="option-btn">
-                <FiBarChart2 className="option-icon" />
-                <span>Khảo sát</span>
-              </button>
-            </div>
-
-            <div className="actions">
-              <button onClick={onClose} className="cancel-btn">Hủy</button>
-              <button className="submit-btn" onClick={() => setStep(2)}>Tiếp</button>
-            </div>
-          </div>
-
-          {/* Step 2 */}
-          {step === 2 && (
-            <div className="modal-box box-2">
-              <div className="title">Bạn muốn đăng bài viết này đến?</div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <label htmlFor="targetSelect" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
-                  Chọn đối tượng hiển thị:
-                </label>
-                <select
-                  id="targetSelect"
-                  value={selectedTarget}
-                  onChange={(e) => {
-                    setSelectedTarget(e.target.value);
-                    setSelectedDepartmentId('');
-                    setSelectedDepartmentIds([]);
-                  }}
-                  className="target-select"
-                >
-                  {getTargetOptions().map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
               </div>
 
-              {selectedTarget === 'multiDepartments' && (
-                <div className="department-checkboxes">
-                  {departments.map((dept) => (
-                    <label key={dept.id} className="checkbox-item">
-                      <input
-                        type="checkbox"
-                        value={dept.id}
-                        checked={selectedDepartmentIds.includes(dept.id)}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          const id = e.target.value;
-                          setSelectedDepartmentIds((prev) =>
-                            checked ? [...prev, id] : prev.filter((d) => d !== id)
-                          );
-                        }}
-                      />
-                      {dept.departmentName}
-                    </label>
-                  ))}
+              {selectedImages.length > 0 && (
+                <div className="image-preview-wrapper">
+                  <button className="arrow left" onClick={handlePrevImage} disabled={currentImageIndex === 0}>
+                    &#10094;
+                  </button>
+                  <div className="slider-track" style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}>
+                    {selectedImages.map((url, idx) => (
+                      <img key={idx} src={url} className="image-post" />
+                    ))}
+                  </div>
+                  <button
+                    className="arrow right"
+                    onClick={handleNextImage}
+                    disabled={currentImageIndex === selectedImages.length - 1}
+                  >
+                    &#10095;
+                  </button>
+                  <button className="remove-image-btn" onClick={handleRemoveCurrentImage}>
+                    &times;
+                  </button>
                 </div>
               )}
 
-              {selectedTarget === 'myDepartment' && user?.role !== 'AdminDepartments' && (
-                <div className="department-radio-group">
-                  {departments.map((dept) => (
-                    <label key={dept.id} className="radio-item">
-                      <input
-                        type="radio"
-                        name="department"
-                        value={dept.id}
-                        checked={selectedDepartmentId === dept.id}
-                        onChange={(e) => setSelectedDepartmentId(e.target.value)}
-                      />
-                      {dept.departmentName}
-                    </label>
-                  ))}
-                </div>
-              )}
+              <div className="more-options">
+                <button className="option-btn" onClick={() => fileInputRef.current.click()}>
+                  <FiImage className="option-icon" />
+                  <span>Ảnh</span>
+                </button>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleImageChange}
+                />
+                <button className="option-btn" onClick={() => setShowSurvey(true)}>
+                  <FiBarChart2 className="option-icon" />
+                  <span>Khảo sát</span>
+                </button>
+              </div>
 
               <div className="actions">
-                <button className="cancel-btn" onClick={() => setStep(1)}>Quay lại</button>
-                <button className="submit-btn" onClick={handleSubmit}>Đăng bài</button>
+                <button onClick={onClose} className="cancel-btn">Hủy</button>
+                <button className="submit-btn" onClick={() => setStep(2)}>Tiếp</button>
               </div>
             </div>
-          )}
 
-        </div>
+            {/* Step 2 */}
+            {step === 2 && (
+              <div className="modal-box box-2">
+                <div className="title">Bạn muốn đăng bài viết này đến?</div>
+
+                <div style={{ marginBottom: '15px' }}>
+                  <label htmlFor="targetSelect" style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>
+                    Chọn đối tượng hiển thị:
+                  </label>
+                  <select
+                    id="targetSelect"
+                    value={selectedTarget}
+                    onChange={(e) => {
+                      setSelectedTarget(e.target.value);
+                      setSelectedDepartmentId('');
+                      setSelectedDepartmentIds([]);
+                    }}
+                    className="target-select"
+                  >
+                    {getTargetOptions().map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedTarget === 'multiDepartments' && (
+                  <div className="department-checkboxes">
+                    {departments.map((dept) => (
+                      <label key={dept.id} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          value={dept.id}
+                          checked={selectedDepartmentIds.includes(dept.id)}
+                          onChange={(e) => {
+                            const checked = e.target.checked;
+                            const id = e.target.value;
+                            setSelectedDepartmentIds((prev) =>
+                              checked ? [...prev, id] : prev.filter((d) => d !== id)
+                            );
+                          }}
+                        />
+                        {dept.departmentName}
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                {selectedTarget === 'myDepartment' && user?.role !== 'AdminDepartments' && (
+                  <div className="department-radio-group">
+                    {departments.map((dept) => (
+                      <label key={dept.id} className="radio-item">
+                        <input
+                          type="radio"
+                          name="department"
+                          value={dept.id}
+                          checked={selectedDepartmentId === dept.id}
+                          onChange={(e) => setSelectedDepartmentId(e.target.value)}
+                        />
+                        {dept.departmentName}
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                <div className="actions">
+                  <button className="cancel-btn" onClick={() => setStep(1)}>Quay lại</button>
+                  <button className="submit-btn" onClick={handleSubmit}>Đăng bài</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
+      {showSurvey && (
+        <CreateSurvey
+          onClose={() => {
+            setShowSurvey(false);
+            onClose();
+          }}
+        />
+      )}
     </div>
   );
 };

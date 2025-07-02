@@ -1,9 +1,12 @@
 import React, { use, useEffect, useState } from 'react';
 import './Reply.css';
-import { getDatabase, ref, onValue, set, get, query, orderByChild, equalTo, child } from 'firebase/database';
+import { getDatabase, ref, onValue, set, get, query, orderByChild, equalTo, child, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { FaHeart, FaRegComment } from 'react-icons/fa';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
+dayjs.extend(relativeTime);
 const Reply = ({
   postId,
   replyId,
@@ -23,7 +26,6 @@ const Reply = ({
   const [liked, setLiked] = useState(false);
   const currentUserId = getAuth().currentUser?.uid;
   const [likeCount, setLikeCount] = useState(replyLike?.count || 0);
-
 
   useEffect(() => {
     const db = getDatabase();
@@ -46,11 +48,13 @@ const Reply = ({
 
   const handlePress = async () => {
     const db = getDatabase();
-    const likePath = `Posts/${groupId}/${userPostId}/${postId}/comments/commentData/${commentId}/replies/replyData/${replyId}/replyLike`;
-    const likeRef = ref(db, likePath);
+    const basePath = `comments/commentData/${commentId}/replies/replyData/${replyId}/replyLike`;
+
+    const likePath = `Posts/${groupId}/${userPostId}/${postId}/${basePath}`;
+    const defPath = `PostDefaults/${postId}/${basePath}`;
 
     try {
-      const snapshot = await get(likeRef);
+      const snapshot = await get(ref(db, likePath));
       const currentData = snapshot.val() || { count: 0, userIds: [] };
       let updatedUserIds = currentData.userIds || [];
 
@@ -66,15 +70,20 @@ const Reply = ({
         userIds: updatedUserIds,
       };
 
-      await set(likeRef, newLikeData);
+      // Cập nhật cả hai nơi
+      await update(ref(db), {
+        [likePath]: newLikeData,
+        [defPath]: newLikeData,
+      });
+
       setLiked(!liked);
     } catch (error) {
-      console.error('Error updating like:', error);
+      console.error('Error updating reply like:', error);
     }
   };
 
   const fetchUserComment = async () => {
-    const studentQuery = query(ref(getDatabase(), 'Students'), orderByChild('userId'), equalTo(userReplyId));
+    const studentQuery = query(ref(getDatabase(), 'Users'), orderByChild('userId'), equalTo(userReplyId));
     try {
       const snapshot = await get(studentQuery);
       if (snapshot.exists()) {
@@ -113,11 +122,10 @@ const Reply = ({
     if (userCommentId) fetchUserComment();
   }, [userCommentId]);
 
-  const formatDate = (date) => {
-    if (!date || isNaN(Date.parse(date))) return 'Không xác định';
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
     const now = new Date();
-    const commentDate = new Date(date);
-    const diff = Math.floor((now.getTime() - commentDate.getTime()) / 1000);
+    const diff = Math.floor((now - date) / 1000);
 
     if (diff < 60) return 'Vừa xong';
     if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`;

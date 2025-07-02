@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, get, onValue, set, query, orderByChild, equalTo, getDatabase, child } from 'firebase/database';
+import { ref, get, onValue, set, query, orderByChild, equalTo, getDatabase, child, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import { FaHeart, FaRegComment } from 'react-icons/fa';
 import './Comment.css'; // Import your CSS styles
@@ -43,30 +43,34 @@ const Comment = ({
   }, [groupId, userPostId, postId, commentId, currentUserId]);
 
   const handleLike = async () => {
-    const likeRef = ref(db, `Posts/${groupId}/${userPostId}/${postId}/comments/commentData/${commentId}/commentLike`);
-    const snapshot = await get(likeRef);
-    const currentData = snapshot.val() || { count: 0, userIds: [] };
-    let updatedUserIds = currentData.userIds || [];
+    const likePath = `Posts/${groupId}/${userPostId}/${postId}/comments/commentData/${commentId}/commentLike`;
+    const defPath = `PostDefaults/${postId}/comments/commentData/${commentId}/commentLike`;
 
-    const newLike = !liked;
-    if (newLike) {
-      if (!updatedUserIds.includes(currentUserId)) {
-        updatedUserIds.push(currentUserId);
-      }
+    // lấy dữ liệu hiện tại ở Posts/*
+    const snap = await get(ref(db, likePath));
+    const cur = snap.val() || { count: 0, userIds: [] };
+
+    // tính toán trạng thái mới
+    const isLike = !liked;                    // liked = state ở UI
+    let ids = [...(cur.userIds || [])];
+
+    if (isLike) {
+      if (!ids.includes(currentUserId)) ids.push(currentUserId);
     } else {
-      updatedUserIds = updatedUserIds.filter((id) => id !== currentUserId);
+      ids = ids.filter(id => id !== currentUserId);
     }
 
-    const newData = {
-      count: updatedUserIds.length,
-      userIds: updatedUserIds,
-    };
+    const newData = { count: ids.length, userIds: ids };
 
-    await set(likeRef, newData);
+    // ghi đồng thời vào 2 đường dẫn
+    await update(ref(db), {
+      [likePath]: newData,
+      [defPath]: newData,
+    });
   };
 
   const fetchUserComment = async () => {
-    const studentQuery = query(ref(db, 'Students'), orderByChild('userId'), equalTo(userCommentId));
+    const studentQuery = query(ref(db, 'Users'), orderByChild('userId'), equalTo(userCommentId));
 
     try {
       const snapshot = await get(studentQuery);
@@ -135,7 +139,7 @@ const Comment = ({
             userCommentId,
             userReplyId: item.userReplyId,
             content: item.content,
-            createdAt: item.commentCreateAt,
+            createdAt: item.createdAt,
             replyLike: {
               count: item.commentLike?.count || 0,
               userIds: item.commentLike?.userIds || [],

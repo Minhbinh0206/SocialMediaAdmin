@@ -10,44 +10,41 @@ const HomePage = () => {
   const [posts, setPosts] = React.useState([]);
 
   useEffect(() => {
-    const postsRef = ref(database, 'Posts');
+    const defaultsRef = ref(database, 'PostDefaults');
 
-    const unsubscribe = onValue(postsRef, (snapshot) => {
-      const postList = [];
+    const unsubscribe = onValue(defaultsRef, snapshot => {
+      const list = [];
 
-      snapshot.forEach(groupSnap => {
-        groupSnap.forEach(adminSnap => {
-          adminSnap.forEach(postSnap => {
-            const postData = postSnap.val();
+      snapshot.forEach(postSnap => {
+        const data = postSnap.val();
 
-            postList.push({
-              id: postData.postId,
-              groupId: postData.groupId || '',
-              userId: postData.userId || '',
-              postId: postData.postId || '',
-              timeAgo: postData.createAt || '',
-              postImage: Array.isArray(postData.postImage) ? postData.postImage : [],
-              description: postData.content,
-              likes: postData.postLike?.count || 0,
-              likedUserIds: Array.isArray(postData.postLike?.userIds) ? postData.postLike.userIds : [],
-              comments: 0,
-              shares: 0,
-            });
-          });
+        list.push({
+          id: postSnap.key,                     
+          postId: data.postId || postSnap.key,
+          groupId: data.groupId || '',
+          userId: data.userId || '',
+          timeAgo: data.createAt || '',         
+          postImage: Array.isArray(data.postImage) ? data.postImage : [],
+          description: data.content,
+          likes: data.postLike?.count || 0,
+          likedUserIds: Array.isArray(data.postLike?.userIds)
+            ? data.postLike.userIds
+            : [],
+          comments: 0,
+          shares: 0,
         });
       });
 
-      // Sắp xếp bài viết theo thời gian mới nhất nếu có createAt dạng timestamp
-      postList.sort((a, b) => new Date(b.timeAgo) - new Date(a.timeAgo));
+      // sắp xếp mới nhất
+      list.sort(
+        (a, b) => Number(b.timeAgo) - Number(a.timeAgo)
+      );
 
-      setPosts(postList);
-
-      console.log('Danh sách bài viết:', postList);
-
+      setPosts(list);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [posts]);
 
   return (
     <div>

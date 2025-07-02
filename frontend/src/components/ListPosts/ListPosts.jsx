@@ -1,6 +1,6 @@
 // components/ListPost.jsx
 import React, { use, useEffect, useState } from 'react';
-import Post from '../../componentsItem/Post/Post.tsx';
+import Post from '../../componentsItem/Post/Post';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../../firebaseConfig';
 
@@ -20,7 +20,7 @@ const ListPost = ({ posts  }) => {
             likes={post.likes}
             groupId={post.groupId}
             comments={post.comments}
-            shares={post.shares}
+            marks={post.marks}
           />
         ))
       ) : (
