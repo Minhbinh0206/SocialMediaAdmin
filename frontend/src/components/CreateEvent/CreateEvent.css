@@ -1,0 +1,217 @@
+.event-form {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.event-form h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.event-form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.event-form input {
+    max-width: 96%;
+    min-width: 96%;
+    max-height: 300px;
+    width: 96%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.event-form textarea {
+    max-width: 96%;
+    min-width: 96%;
+    max-height: 300px;
+    min-height: 100px;
+    width: 96%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.event-form button[type='submit'] {
+    background: #00bcd4;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    transition: background 0.2s;
+}
+
+.event-form button[type='submit']:hover {
+    background: #0097a7;
+}
+
+.req {
+    color: red;
+    margin-left: 5px;
+}
+
+.grid-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.thumb-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.thumb-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.remove-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    padding: 2px 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.image-upload {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.image-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background-color: #f4f4f4;
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.image-button:hover {
+    background-color: #e6f7ff;
+}
+
+.image-icon {
+    width: 20px;
+    height: 20px;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2300bcd4" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM5 5h14v3.17l-2.59-2.58L14 7.59 9.41 3H5v2zm0 14v-1.17l4.59-4.58 4.58 4.59L19 14.17V19H5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.picked-count {
+    font-size: 14px;
+    color: #555;
+}
+
+.input-time {
+    width: 45%;
+    border: none;
+}
+
+.date-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.date-inline input[type="datetime-local"] {
+    flex: 1;
+}
+
+.date-inline-preview {
+    white-space: nowrap;
+    font-size: 14px;
+    color: #333;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #005fa3;
+}
+
+.image-button:hover {
+    background-color: #e6f7ff;
+}
+
+.date-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.date-inline input[type="datetime-local"] {
+    flex: 0 0 180px;
+}
+
+.date-inline-preview {
+    white-space: nowrap;
+    font-size: 14px;
+    color: #333;
+}
+
+.date-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    width: 99%;
+}
+
+.date-inline input[type="datetime-local"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.date-inline-preview {
+    white-space: nowrap;
+    font-size: 14px;
+    color: #333;
+}

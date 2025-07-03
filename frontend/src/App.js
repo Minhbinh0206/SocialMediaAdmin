@@ -6,6 +6,7 @@ import LoginPage from './pages/Logins/Login';
 import PostPage from './pages/Posts/PostPage';
 import HomePage from './pages/Homes/Home';
 import NotifyPage from './pages/Notify/NotifyPage';
+import EventPage from './pages/Events/Event';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/posts" element={<PostPage />} />
         <Route path="/notifies" element={<NotifyPage />} />
+        <Route path="/events" element={<EventPage />} />
       </Routes>
     </Router>
   );
