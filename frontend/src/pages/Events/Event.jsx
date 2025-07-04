@@ -13,6 +13,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import CreateNotify from '../../components/CreateNotify/CreateNotify';
 import ListNotifies from '../../components/ListNotifies/ListNotifies';
 import CreateEvent from '../../components/CreateEvent/CreateEvent';
+import ListEvents from '../../components/ListEvent/ListEvents';
 
 const EventPage = () => {
     const [user, setUser] = useState(null);
@@ -72,7 +73,7 @@ const EventPage = () => {
                     <CreateEvent />
                 </div>
                 <div className="notify-column right-notify">
-                    ?
+                    <ListEvents />
                 </div>
             </div>
         </div>

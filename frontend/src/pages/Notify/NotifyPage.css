@@ -34,11 +34,11 @@ body {
 }
 
 .middle-notify {
-  flex: 7;
+  flex: 6;
 }
 
 .right-notify {
-  flex: 3;
+  flex: 4;
 }
 
 
