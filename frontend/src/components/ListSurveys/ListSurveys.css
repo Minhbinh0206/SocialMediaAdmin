@@ -1,0 +1,120 @@
+.survey-item {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px solid #e0e6ed;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.survey-item:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.survey-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  flex-shrink: 0;
+}
+
+/* ✅ DÒNG TRÊN: avatar name + tag */
+.survey-header {
+  display: flex;
+  align-items: center;  
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.survey-header-left {
+  display: flex;
+  align-items: center;  
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.survey-org {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.survey-tag {
+  font-weight: 500;
+  color: #3498db;
+  font-size: 13px;
+}
+
+/* ✅ TIÊU ĐỀ KHẢO SÁT: lớn, 1 dòng riêng */
+.survey-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #00796b;
+}
+
+/* ✅ DÒNG DƯỚI: Xem thêm – thời gian */
+.survey-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  width: 100%;
+}
+
+.survey-view-button {
+  color: #3498db;
+  font-weight: 500;
+  padding: 10px 0;
+}
+
+.survey-time {
+  color: #e74c3c;
+  font-weight: bold;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* ...giữ phần CSS list cũ ... */
+
+.survey-view-button {
+  background: transparent;
+  border: none;
+  color: #2980b9;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0;
+}
+.survey-view-button:hover { text-decoration: underline; }
+
+/* ----- modal Hello world ----- */
+.survey-modal-wrapper {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.survey-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  min-width: 260px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+}

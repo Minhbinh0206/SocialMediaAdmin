@@ -5,6 +5,7 @@ import NavBar from '../../components/NavBar/NavBar';
 import ListPost from '../../components/ListPosts/ListPosts';
 import { onValue, ref } from 'firebase/database';
 import { database } from '../../firebaseConfig';
+import ListSurveys from '../../components/ListSurveys/ListSurveys';
 
 const HomePage = () => {
   const [posts, setPosts] = React.useState([]);
@@ -54,12 +55,12 @@ const HomePage = () => {
           <HomePersonal />
         </div>
         <div className="column middle-column">
-          <h3 style={{ fontSize: 25, padding: '0 30px' }}>Bảng tin</h3>
+          <h3 style={{ fontSize: 25, padding: '0 30px' }}>Bài viết</h3>
           <ListPost posts={posts} />
         </div>
         <div className="column right-column">
-          <h3>Cột phải</h3>
-          <p>Thông báo, lời mời, bạn bè…</p>
+          <h3 style={{ fontSize: 25, padding: '0 30px' }}>Khảo sát</h3>
+          <ListSurveys />
         </div>
       </div>
     </div>

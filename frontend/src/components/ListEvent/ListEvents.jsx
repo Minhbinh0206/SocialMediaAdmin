@@ -51,7 +51,7 @@ function EventModal({
 }) {
   const [slideIndex, setSlideIndex] = useState(0);
   const [showQR, setShowQR] = useState(false);
-
+  
   /* Auto‑slide ảnh trong modal */
   useEffect(() => {
     if (!open || !Array.isArray(evt?.imageEvents)) return;
@@ -65,9 +65,6 @@ function EventModal({
   if (!open || !evt) return null;
 
   const isArray = Array.isArray(evt.imageEvents);
-
-  console.log(evt.currentQrCode);
-  
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -332,6 +329,21 @@ export default function ListEvents() {
       },
     ]);
   };
+
+  useEffect(() => {
+    if (!current?.eventId) return;
+
+    const uid = getAuth().currentUser?.uid;
+    if (!uid) return;
+
+    const qrRef = ref(getDatabase(), `Events/${uid}/${current.eventId}/currentQrCode`);
+    const unsub = onValue(qrRef, (snap) => {
+      const code = snap.val();
+      setCurrent((prev) => prev ? { ...prev, currentQrCode: code } : prev);
+    });
+
+    return () => unsub();
+  }, [current?.eventId]);
 
   const removeQuestion = (id) =>
     setQuestions((prev) => prev.filter((q) => q.id !== id));

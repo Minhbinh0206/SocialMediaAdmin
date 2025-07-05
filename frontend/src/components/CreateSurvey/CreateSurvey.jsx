@@ -17,7 +17,7 @@ const emojiDescriptions = ['Rất tệ', 'Không thích', 'Bình thường', 'Th
 export default function CreateSurvey({ onClose }) {
     const [title, setTitle] = useState('');
     const [questions, setQuestions] = useState([]);
-    const [startedAt, setStartedAt] = useState('');
+    const startedAt = Date.now();
     const [finishedAt, setFinishedAt] = useState('');
 
     /* Thêm câu hỏi mới */
@@ -181,7 +181,7 @@ export default function CreateSurvey({ onClose }) {
     };
 
     return (
-        <div className="survey-modal">
+        <div className="survey-modall">
             <div className="survey-box">
                 <h2 className="survey-heading">Tạo Khảo Sát</h2>
 
@@ -192,7 +192,7 @@ export default function CreateSurvey({ onClose }) {
                             style={{ marginTop: 5 }}
                             type="datetime-local"
                             value={startedAt}
-                            onChange={(e) => setStartedAt(e.target.value)}
+                            disabled
                         />
                     </label>
 

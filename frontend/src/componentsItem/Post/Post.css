@@ -2,7 +2,7 @@
 .post {
   background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   padding: 16px;
   margin: 5px 30px 30px 24px;
   max-width: 600px;
@@ -10,7 +10,7 @@
 }
 
 .post:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
 /* Header */
@@ -162,7 +162,7 @@
   margin-right: 6px;
 }
 
-.modal-backdrop {
+.modal-backdrop-post {
   position: fixed;
   top: 0;
   left: 0;
@@ -175,9 +175,10 @@
   z-index: 1000;
 }
 
-.modal-content {
+.modal-content-post {
   background: #fff;
   border-radius: 12px;
+  min-height: 70vh;
   max-height: 70vh;
   overflow-y: auto;
   width: 600px;
@@ -304,4 +305,11 @@
   cursor: pointer;
   margin-left: 10px;
   line-height: 1;
+}
+
+.title-modal{
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 18;
+  font-weight: bold;
 }

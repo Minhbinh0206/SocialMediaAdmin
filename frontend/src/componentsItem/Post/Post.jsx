@@ -347,11 +347,13 @@ const Post = ({
 
       {/* ==== COMMENT MODAL ==== */}
       {showCommentModal && (
-        <div className="modal-backdrop" onClick={() => setShowCommentModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="modal-backdrop-post" onClick={() => setShowCommentModal(false)}>
+          <div className="modal-content-post" onClick={e => e.stopPropagation()}>
             <button className="close-button" onClick={() => setShowCommentModal(false)}>
               ×
             </button>
+
+            <div className='title-modal'> Bình luận bài viết </div>
 
             {/* post preview in modal */}
             <div className="post">
