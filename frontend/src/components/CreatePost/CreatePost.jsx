@@ -41,7 +41,7 @@ const CreatePost = ({ onClose }) => {
         const uid = currentUser.uid;
         try {
           const rootRef = dbRef(database);
-          const adminTypes = ['AdminBusinesses', 'AdminDefaults', 'AdminDepartments'];
+          const adminTypes = ['AdminBussinesses', 'AdminDefaults', 'AdminDepartments'];
           for (const type of adminTypes) {
             const snapshot = await get(child(rootRef, `Admins/${type}/${uid}`));
             if (snapshot.exists()) {
@@ -99,7 +99,7 @@ const CreatePost = ({ onClose }) => {
           { value: 'all', label: 'Học sinh toàn trường' },
           { value: 'myDepartment', label: 'Học sinh trong khoa' },
         ];
-      case 'AdminBusinesses':
+      case 'AdminBussinesses':
         return [
           { value: 'all', label: 'Học sinh toàn trường' },
           { value: 'multiDepartments', label: 'Học sinh thuộc khoa liên kết' },

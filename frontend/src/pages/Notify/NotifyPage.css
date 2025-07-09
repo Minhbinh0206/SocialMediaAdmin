@@ -30,11 +30,11 @@ body {
 
 /* Tỉ lệ chia */
 .left-notify {
-  flex: 3;
+  flex: 2;
 }
 
 .middle-notify {
-  flex: 6;
+  flex: 4;
 }
 
 .right-notify {

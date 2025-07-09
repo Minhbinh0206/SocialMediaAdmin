@@ -31,7 +31,7 @@ const PostPage = () => {
             const dbRef = ref(database);
 
             try {
-                const adminTypes = ['AdminBusinesses', 'AdminDefaults', 'AdminDepartments'];
+                const adminTypes = ['AdminBussinesses', 'AdminDefaults', 'AdminDepartments'];
                 let foundData = null;
 
                 for (const type of adminTypes) {
